@@ -237,8 +237,7 @@
   function fmtPct(n) {
     return n.toFixed(3) + '%';
   }
-  function fmtInput(s) {
-    var raw = s.replace(/[^0-9]/g, '');
+  function fmtInput(raw) {
     if (!raw) return '';
     return parseInt(raw, 10).toLocaleString('en-US');
   }
@@ -430,15 +429,13 @@
 
   // --- Wire up inputs ---
   ['totalAssets', 'budget'].forEach(function(id) {
-    document.getElementById(id).addEventListener('input', function() {
-      var el = this;
-      var raw = el.value.replace(/[^0-9]/g, '');
-      var pos = el.selectionStart;
-      var oldLen = el.value.length;
-      el.value = fmtInput(el.value);
-      var newLen = el.value.length;
-      var newPos = pos + (newLen - oldLen);
-      el.setSelectionRange(newPos, newPos);
+    var el = document.getElementById(id);
+    el.addEventListener('input', function() {
+      var raw = this.value.replace(/[^0-9]/g, '');
+      var formatted = fmtInput(raw);
+      if (this.value !== formatted) {
+        this.value = formatted;
+      }
       calculate();
       scheduleSave();
     });
