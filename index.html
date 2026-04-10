@@ -234,6 +234,11 @@
   function fmtPct(n) {
     return n.toFixed(3) + '%';
   }
+  function fmtInput(s) {
+    var raw = s.replace(/[^0-9]/g, '');
+    if (!raw) return '';
+    return parseInt(raw, 10).toLocaleString('en-US');
+  }
 
   // --- Sign toggle ---
   function toggleSign() {
@@ -421,11 +426,23 @@
   }
 
   // --- Wire up inputs ---
-  ['totalAssets', 'spMove', 'budget'].forEach(function(id) {
+  ['totalAssets', 'budget'].forEach(function(id) {
     document.getElementById(id).addEventListener('input', function() {
+      var el = this;
+      var raw = el.value.replace(/[^0-9]/g, '');
+      var pos = el.selectionStart;
+      var oldLen = el.value.length;
+      el.value = fmtInput(el.value);
+      var newLen = el.value.length;
+      var newPos = pos + (newLen - oldLen);
+      el.setSelectionRange(newPos, newPos);
       calculate();
       scheduleSave();
     });
+  });
+  document.getElementById('spMove').addEventListener('input', function() {
+    calculate();
+    scheduleSave();
   });
 
   // --- Init ---
