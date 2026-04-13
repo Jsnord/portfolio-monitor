@@ -176,6 +176,10 @@
     <span class="rl">Marketable (close)</span>
     <span class="rv" id="mktClose">—</span>
   </div>
+  <div class="row">
+    <span class="rl">S&amp;P Intraday Adj.</span>
+    <span class="rv" id="spAdj">—</span>
+  </div>
   <div class="row bold">
     <span class="rl">Marketable (MTM)</span>
     <span class="rv" id="mktMTM">—</span>
@@ -219,6 +223,7 @@
   var saveTimer = null;
   var TARGET_RATE = 0.015; // 1.500%
   var NON_MARKETABLE = 3250000; // $3.25M fixed
+  var NON_EQUITY_MARKETABLE = 19953312; // bonds/fixed income — S&P move does NOT apply here
 
   // --- Helpers ---
   function parseNum(s) {
@@ -274,7 +279,9 @@
 
     var marketableClose = total - NON_MARKETABLE;
     if (marketableClose < 0) marketableClose = 0;
-    var marketableMTM = marketableClose * (1 + sp / 100);
+    var equityBase = Math.max(0, marketableClose - NON_EQUITY_MARKETABLE);
+    var spAdjustment = equityBase * (sp / 100);
+    var marketableMTM = marketableClose + spAdjustment;
     var totalMTM = marketableMTM + NON_MARKETABLE;
 
     // Withdrawal rate = budget / marketable MTM
@@ -310,6 +317,14 @@
 
     // Portfolio breakdown
     document.getElementById('mktClose').textContent = fmtM(marketableClose);
+    var adjEl = document.getElementById('spAdj');
+    if (sp !== 0) {
+      adjEl.textContent = (spAdjustment >= 0 ? '+' : '') + fmtDollar(spAdjustment);
+      adjEl.className = 'rv ' + (spAdjustment >= 0 ? 'clr-green' : 'clr-red');
+    } else {
+      adjEl.textContent = '—';
+      adjEl.className = 'rv';
+    }
     document.getElementById('mktMTM').textContent = fmtM(marketableMTM);
     document.getElementById('nonMkt').textContent = fmtM(NON_MARKETABLE);
     document.getElementById('totalMTM').textContent = fmtM(totalMTM);
