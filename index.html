@@ -167,6 +167,14 @@
     <span class="input-prefix">$</span>
     <input type="text" id="budget" inputmode="numeric" placeholder="0">
   </div>
+
+  <div class="field-gap"></div>
+
+  <div class="field-label">Vacation Spent YTD</div>
+  <div class="input-row">
+    <span class="input-prefix">$</span>
+    <input type="text" id="vacSpent" inputmode="numeric" placeholder="0" value="16,000">
+  </div>
 </div>
 
 <!-- Portfolio Breakdown -->
@@ -338,7 +346,8 @@
     document.getElementById('spBudgeted').textContent = fmtDollar(budget);
     var maxSpend = TARGET_RATE * marketableMTM;
     document.getElementById('spMax').textContent = fmtDollar(maxSpend);
-    var vacAvail = maxSpend - REQUIRED_EXPENSES;
+    var vacSpent = parseNum(document.getElementById('vacSpent').value);
+    var vacAvail = maxSpend - REQUIRED_EXPENSES - vacSpent;
     var vacEl = document.getElementById('vacAvail');
     vacEl.textContent = fmtDollar(vacAvail);
     vacEl.className = 'rv ' + (vacAvail >= 0 ? 'clr-green' : 'clr-red');
@@ -350,6 +359,7 @@
       totalAssets: document.getElementById('totalAssets').value,
       spMove: document.getElementById('spMove').value,
       budget: document.getElementById('budget').value,
+      vacSpent: document.getElementById('vacSpent').value,
       isNeg: isNeg
     };
   }
@@ -359,6 +369,7 @@
     if (s.totalAssets) document.getElementById('totalAssets').value = s.totalAssets;
     if (s.spMove) document.getElementById('spMove').value = s.spMove;
     if (s.budget) document.getElementById('budget').value = s.budget;
+    if (s.vacSpent) document.getElementById('vacSpent').value = s.vacSpent;
     if (typeof s.isNeg === 'boolean') {
       isNeg = s.isNeg;
       var btn = document.getElementById('signToggle');
@@ -452,7 +463,7 @@
   }
 
   // --- Wire up inputs ---
-  ['totalAssets', 'budget'].forEach(function(id) {
+  ['totalAssets', 'budget', 'vacSpent'].forEach(function(id) {
     var el = document.getElementById(id);
     el.addEventListener('input', function() {
       var raw = this.value.replace(/[^0-9]/g, '');
