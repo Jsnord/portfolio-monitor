@@ -168,13 +168,6 @@
     <input type="text" id="budget" inputmode="numeric" placeholder="0">
   </div>
 
-  <div class="field-gap"></div>
-
-  <div class="field-label">Vacation Spent YTD</div>
-  <div class="input-row">
-    <span class="input-prefix">$</span>
-    <input type="text" id="vacSpent" inputmode="numeric" placeholder="0" value="16,000">
-  </div>
 </div>
 
 <!-- Portfolio Breakdown -->
@@ -216,16 +209,20 @@
 <!-- Annual Spending -->
 <div class="card">
   <div class="section-title">Annual Spending</div>
-  <div class="row bold">
-    <span class="rl">Total Budgeted</span>
-    <span class="rv" id="spBudgeted">—</span>
-  </div>
   <div class="row">
-    <span class="rl">Max at 1.500%</span>
+    <span class="rl">1.5% Spend</span>
     <span class="rv" id="spMax">—</span>
   </div>
-  <div class="row spaced">
-    <span class="rl">Vacation Available</span>
+  <div class="row">
+    <span class="rl">Total Required Spend</span>
+    <span class="rv">$647,914</span>
+  </div>
+  <div class="row">
+    <span class="rl">Vaca Spent to Date</span>
+    <span class="rv"><span style="color:#636366">$</span><input type="text" id="vacSpent" inputmode="numeric" value="16,000" style="background:transparent;border:none;color:#fff;font-size:15px;font-weight:600;text-align:right;width:90px;outline:none;font-family:inherit"></span>
+  </div>
+  <div class="row bold spaced">
+    <span class="rl">Remaining Vacation</span>
     <span class="rv" id="vacAvail">—</span>
   </div>
 </div>
