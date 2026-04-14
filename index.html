@@ -194,17 +194,6 @@
     <span class="rl">Total Assets (MTM)</span>
     <span class="rv" id="totalMTM">—</span>
   </div>
-  <div class="link" id="nmToggle" onclick="toggleNMDetail()">Show non-marketable detail</div>
-  <div class="nm-detail" id="nmDetail">
-    <div class="row">
-      <span class="rl">Stable Value / Money Market</span>
-      <span class="rv" id="nmStable">$2.00M</span>
-    </div>
-    <div class="row">
-      <span class="rl">Other Non-Marketable</span>
-      <span class="rv" id="nmOther">$1.25M</span>
-    </div>
-  </div>
 </div>
 
 <!-- Annual Spending -->
@@ -268,20 +257,7 @@
     scheduleSave();
   }
 
-  // --- Non-marketable detail toggle ---
-  function toggleNMDetail() {
-    var el = document.getElementById('nmDetail');
-    var link = document.getElementById('nmToggle');
-    if (el.classList.contains('show')) {
-      el.classList.remove('show');
-      link.textContent = 'Show non-marketable detail';
-    } else {
-      el.classList.add('show');
-      link.textContent = 'Hide non-marketable detail';
-    }
-  }
-
-  // --- Calculate ---
+// --- Calculate ---
   function calculate() {
     var total = parseNum(document.getElementById('totalAssets').value);
     var sp = parseNum(document.getElementById('spMove').value);
