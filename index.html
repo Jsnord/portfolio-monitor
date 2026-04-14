@@ -346,7 +346,7 @@
     var vacAvail = maxSpend - REQUIRED_EXPENSES - vacSpent;
     var vacEl = document.getElementById('vacAvail');
     vacEl.textContent = fmtDollar(vacAvail);
-    vacEl.className = 'rv ' + (vacAvail > 0 ? 'clr-green' : 'clr-yellow');
+    vacEl.style.color = vacAvail > 0 ? '#30d158' : '#ffd60a';
   }
 
   // --- Persistence (localStorage + cookies + IndexedDB) ---
