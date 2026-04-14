@@ -340,7 +340,6 @@
     document.getElementById('totalMTM').textContent = fmtM(totalMTM);
 
     // Annual spending
-    document.getElementById('spBudgeted').textContent = fmtDollar(budget);
     var maxSpend = TARGET_RATE * marketableMTM;
     document.getElementById('spMax').textContent = fmtDollar(maxSpend);
     var vacSpent = parseNum(document.getElementById('vacSpent').value);
