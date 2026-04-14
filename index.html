@@ -216,6 +216,10 @@
     <span class="rl">Max at 1.500%</span>
     <span class="rv" id="spMax">—</span>
   </div>
+  <div class="row spaced">
+    <span class="rl">Vacation Available</span>
+    <span class="rv" id="vacAvail">—</span>
+  </div>
 </div>
 
 <script>
@@ -224,6 +228,7 @@
   var TARGET_RATE = 0.015; // 1.500%
   var NON_MARKETABLE = 3250788; // House $3M + Art $50K + Watches $100K + Finepoint $25K + Redbird $50K + Sentient $25,788
   var NON_EQUITY_MARKETABLE = 19953312; // bonds + ETFs + money market — real-time or non-S&P; excluded from stale NAV adjustment
+  var REQUIRED_EXPENSES = 647914; // Rent $185,700 + Core Living $176,714 + Taxes $285,500
 
   // --- Helpers ---
   function parseNum(s) {
@@ -333,6 +338,10 @@
     document.getElementById('spBudgeted').textContent = fmtDollar(budget);
     var maxSpend = TARGET_RATE * marketableMTM;
     document.getElementById('spMax').textContent = fmtDollar(maxSpend);
+    var vacAvail = maxSpend - REQUIRED_EXPENSES;
+    var vacEl = document.getElementById('vacAvail');
+    vacEl.textContent = fmtDollar(vacAvail);
+    vacEl.className = 'rv ' + (vacAvail >= 0 ? 'clr-green' : 'clr-red');
   }
 
   // --- Persistence (localStorage + cookies + IndexedDB) ---
