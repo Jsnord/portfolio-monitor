@@ -140,6 +140,7 @@
   <div class="wr-label">Withdrawal Rate</div>
   <div class="wr-value" id="wrValue">—</div>
   <div class="wr-target">Target: 1.500% <span class="delta" id="wrDelta"></span></div>
+  <div class="wr-cushion">Portfolio move to 1.5%: <span class="val" id="wrPortfolioMove">—</span></div>
   <div class="wr-cushion">Cushion: <span class="val" id="wrCushion">—</span> / yr vs target</div>
 </div>
 
@@ -313,6 +314,18 @@
       deltaEl.className = 'delta ' + (delta <= 0 ? 'clr-green' : 'clr-red');
     } else {
       deltaEl.textContent = '';
+    }
+
+    // Portfolio move to target
+    var moveEl = document.getElementById('wrPortfolioMove');
+    if (marketableMTM > 0) {
+      var targetMarketable = budget / TARGET_RATE;
+      var portfolioMove = targetMarketable - marketableMTM;
+      moveEl.textContent = (portfolioMove >= 0 ? '+' : '') + fmtDollar(portfolioMove);
+      moveEl.style.color = portfolioMove <= 0 ? '#30d158' : '#ff453a';
+    } else {
+      moveEl.textContent = '—';
+      moveEl.style.color = '';
     }
 
     // Cushion
