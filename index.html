@@ -241,17 +241,14 @@
 <!-- Actuarial Spending -->
 <div class="card">
   <div class="section-title">Actuarial Spending (WSJ Method)</div>
+  <input type="hidden" id="birthYear" value="1967">
   <div class="row">
-    <span class="rl" style="color:#636366">Birth Year</span>
-    <span class="rv"><input type="text" id="birthYear" inputmode="numeric" placeholder="e.g. 1967" value="1967" style="background:transparent;border:none;color:#8e8e93;font-size:15px;font-weight:600;text-align:right;width:70px;outline:none;font-family:inherit"></span>
+    <span class="rl">Current Age</span>
+    <span class="rv" id="ybCurrentAge">—</span>
   </div>
   <div class="row">
     <span class="rl" style="color:#636366">Plan to Age</span>
     <span class="rv"><input type="text" id="maxAge" inputmode="numeric" placeholder="e.g. 95" style="background:transparent;border:none;color:#8e8e93;font-size:15px;font-weight:600;text-align:right;width:70px;outline:none;font-family:inherit"></span>
-  </div>
-  <div class="row">
-    <span class="rl">Your Age</span>
-    <span class="rv" id="ybCurrentAge">—</span>
   </div>
   <div class="row">
     <span class="rl">Remaining Years</span>
