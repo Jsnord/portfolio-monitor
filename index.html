@@ -440,13 +440,13 @@
       ybMarker.style.left = markerPct + '%';
       // Status
       if (ybRatePct > 6) {
-        ybGuardEl.textContent = 'Above 6% cap — too high';
+        ybGuardEl.textContent = 'Above 6% cap';
         ybGuardEl.style.color = '#ff453a';
       } else if (ybRatePct < 3) {
-        ybGuardEl.textContent = 'Below 3% floor — very conservative';
+        ybGuardEl.textContent = 'Below 3% floor';
         ybGuardEl.style.color = '#ffd60a';
       } else {
-        ybGuardEl.textContent = 'Within guardrails ✓';
+        ybGuardEl.textContent = 'Within range ✓';
         ybGuardEl.style.color = '#30d158';
       }
       // Floor / ceiling dollar amounts
