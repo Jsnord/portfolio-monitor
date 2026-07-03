@@ -297,7 +297,8 @@
     if (marketableMTM > 0) {
       var targetMarketable = budget / TARGET_RATE;
       var portfolioVsTarget = marketableMTM - targetMarketable;
-      moveEl.textContent = (portfolioVsTarget >= 0 ? '+' : '') + fmtDollar(portfolioVsTarget);
+      var moveArrow = portfolioVsTarget >= 0 ? '▲' : '▼';
+      moveEl.textContent = moveArrow + ' ' + (portfolioVsTarget >= 0 ? '+' : '') + fmtDollar(portfolioVsTarget);
       moveEl.style.color = portfolioVsTarget >= 0 ? '#30d158' : '#ff453a';
     } else {
       moveEl.textContent = '—';
