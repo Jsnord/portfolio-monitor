@@ -217,15 +217,15 @@
   </div>
 </div>
 
-<!-- Years-Based Spending -->
+<!-- Actuarial Spending -->
 <div class="card">
-  <div class="section-title">Years-Based Spending</div>
+  <div class="section-title">Actuarial Spending (WSJ Method)</div>
   <div class="row">
     <span class="rl" style="color:#636366">Current Age</span>
     <span class="rv"><input type="text" id="currentAge" inputmode="numeric" placeholder="e.g. 55" style="background:transparent;border:none;color:#8e8e93;font-size:15px;font-weight:600;text-align:right;width:70px;outline:none;font-family:inherit"></span>
   </div>
   <div class="row">
-    <span class="rl" style="color:#636366">Max Age</span>
+    <span class="rl" style="color:#636366">Plan to Age</span>
     <span class="rv"><input type="text" id="maxAge" inputmode="numeric" placeholder="e.g. 95" style="background:transparent;border:none;color:#8e8e93;font-size:15px;font-weight:600;text-align:right;width:70px;outline:none;font-family:inherit"></span>
   </div>
   <div class="row">
@@ -233,8 +233,16 @@
     <span class="rv" id="ybYears">—</span>
   </div>
   <div class="row">
-    <span class="rl">Annual Spend Capacity</span>
+    <span class="rl">Annual Spend (÷ yrs)</span>
     <span class="rv" id="ybSpend">—</span>
+  </div>
+  <div class="row">
+    <span class="rl">Implied Rate</span>
+    <span class="rv" id="ybRate">—</span>
+  </div>
+  <div class="row">
+    <span class="rl">Guardrails (3–6%)</span>
+    <span class="rv" id="ybGuard">—</span>
   </div>
   <div class="row bold spaced">
     <span class="rl">vs Your Budget</span>
@@ -363,17 +371,32 @@
     vacEl.textContent = fmtDollar(vacAvail);
     vacEl.style.color = vacAvail > 0 ? '#30d158' : '#ffd60a';
 
-    // Years-based spending
+    // Actuarial spending (WSJ method: portfolio / remaining years)
     var currentAge = parseNum(document.getElementById('currentAge').value);
     var maxAge = parseNum(document.getElementById('maxAge').value);
     var remainYears = maxAge - currentAge;
     var ybYearsEl = document.getElementById('ybYears');
     var ybSpendEl = document.getElementById('ybSpend');
+    var ybRateEl = document.getElementById('ybRate');
+    var ybGuardEl = document.getElementById('ybGuard');
     var ybVsEl = document.getElementById('ybVsBudget');
     if (remainYears > 0 && marketableMTM > 0) {
       ybYearsEl.textContent = remainYears + ' yrs';
       var ybAnnual = marketableMTM / remainYears;
       ybSpendEl.textContent = fmtDollar(ybAnnual);
+      var ybRatePct = (ybAnnual / marketableMTM) * 100;
+      ybRateEl.textContent = ybRatePct.toFixed(2) + '%';
+      ybRateEl.style.color = (ybRatePct >= 3 && ybRatePct <= 6) ? '#30d158' : '#ff453a';
+      if (ybRatePct > 6) {
+        ybGuardEl.textContent = 'Above 6% cap';
+        ybGuardEl.style.color = '#ff453a';
+      } else if (ybRatePct < 3) {
+        ybGuardEl.textContent = 'Below 3% floor';
+        ybGuardEl.style.color = '#ffd60a';
+      } else {
+        ybGuardEl.textContent = 'Within range ✓';
+        ybGuardEl.style.color = '#30d158';
+      }
       if (budget > 0) {
         var ybVs = ybAnnual - budget;
         ybVsEl.textContent = (ybVs >= 0 ? '+' : '') + fmtDollar(ybVs);
@@ -385,6 +408,10 @@
     } else {
       ybYearsEl.textContent = '—';
       ybSpendEl.textContent = '—';
+      ybRateEl.textContent = '—';
+      ybRateEl.style.color = '';
+      ybGuardEl.textContent = '—';
+      ybGuardEl.style.color = '';
       ybVsEl.textContent = '—';
       ybVsEl.style.color = '';
     }
