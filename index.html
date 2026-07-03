@@ -217,6 +217,31 @@
   </div>
 </div>
 
+<!-- Years-Based Spending -->
+<div class="card">
+  <div class="section-title">Years-Based Spending</div>
+  <div class="row">
+    <span class="rl" style="color:#636366">Current Age</span>
+    <span class="rv"><input type="text" id="currentAge" inputmode="numeric" placeholder="e.g. 55" style="background:transparent;border:none;color:#8e8e93;font-size:15px;font-weight:600;text-align:right;width:70px;outline:none;font-family:inherit"></span>
+  </div>
+  <div class="row">
+    <span class="rl" style="color:#636366">Max Age</span>
+    <span class="rv"><input type="text" id="maxAge" inputmode="numeric" placeholder="e.g. 95" style="background:transparent;border:none;color:#8e8e93;font-size:15px;font-weight:600;text-align:right;width:70px;outline:none;font-family:inherit"></span>
+  </div>
+  <div class="row">
+    <span class="rl">Remaining Years</span>
+    <span class="rv" id="ybYears">—</span>
+  </div>
+  <div class="row">
+    <span class="rl">Annual Spend Capacity</span>
+    <span class="rv" id="ybSpend">—</span>
+  </div>
+  <div class="row bold spaced">
+    <span class="rl">vs Your Budget</span>
+    <span class="rv" id="ybVsBudget">—</span>
+  </div>
+</div>
+
 <script>
   var isNeg = false;
   var saveTimer = null;
@@ -337,6 +362,32 @@
     var vacEl = document.getElementById('vacAvail');
     vacEl.textContent = fmtDollar(vacAvail);
     vacEl.style.color = vacAvail > 0 ? '#30d158' : '#ffd60a';
+
+    // Years-based spending
+    var currentAge = parseNum(document.getElementById('currentAge').value);
+    var maxAge = parseNum(document.getElementById('maxAge').value);
+    var remainYears = maxAge - currentAge;
+    var ybYearsEl = document.getElementById('ybYears');
+    var ybSpendEl = document.getElementById('ybSpend');
+    var ybVsEl = document.getElementById('ybVsBudget');
+    if (remainYears > 0 && marketableMTM > 0) {
+      ybYearsEl.textContent = remainYears + ' yrs';
+      var ybAnnual = marketableMTM / remainYears;
+      ybSpendEl.textContent = fmtDollar(ybAnnual);
+      if (budget > 0) {
+        var ybVs = ybAnnual - budget;
+        ybVsEl.textContent = (ybVs >= 0 ? '+' : '') + fmtDollar(ybVs);
+        ybVsEl.style.color = ybVs >= 0 ? '#30d158' : '#ff453a';
+      } else {
+        ybVsEl.textContent = '—';
+        ybVsEl.style.color = '';
+      }
+    } else {
+      ybYearsEl.textContent = '—';
+      ybSpendEl.textContent = '—';
+      ybVsEl.textContent = '—';
+      ybVsEl.style.color = '';
+    }
   }
 
   // --- Persistence (localStorage + cookies + IndexedDB) ---
@@ -346,6 +397,8 @@
       spMove: document.getElementById('spMove').value,
       budget: document.getElementById('budget').value,
       vacSpent: document.getElementById('vacSpent').value,
+      currentAge: document.getElementById('currentAge').value,
+      maxAge: document.getElementById('maxAge').value,
       isNeg: isNeg
     };
   }
@@ -356,6 +409,8 @@
     if (s.spMove) document.getElementById('spMove').value = s.spMove;
     if (s.budget) document.getElementById('budget').value = s.budget;
     if (s.vacSpent) document.getElementById('vacSpent').value = s.vacSpent;
+    if (s.currentAge) document.getElementById('currentAge').value = s.currentAge;
+    if (s.maxAge) document.getElementById('maxAge').value = s.maxAge;
     if (typeof s.isNeg === 'boolean') {
       isNeg = s.isNeg;
       var btn = document.getElementById('signToggle');
@@ -464,6 +519,12 @@
   document.getElementById('spMove').addEventListener('input', function() {
     calculate();
     scheduleSave();
+  });
+  ['currentAge', 'maxAge'].forEach(function(id) {
+    document.getElementById(id).addEventListener('input', function() {
+      calculate();
+      scheduleSave();
+    });
   });
 
   // --- Init ---
