@@ -78,9 +78,23 @@
     transform: translateX(-50%);
     transition: left 0.3s;
   }
+  .guard-marker-budget {
+    position: absolute; top: -5px;
+    width: 18px; height: 18px; border-radius: 50%;
+    background: #0a84ff; border: 3px solid #000;
+    transform: translateX(-50%);
+    transition: left 0.3s;
+  }
   .guard-bar-labels {
     display: flex; justify-content: space-between;
     font-size: 11px; color: #636366; margin-top: 4px;
+  }
+  .guard-legend {
+    display: flex; gap: 14px; margin-top: 6px; font-size: 11px; color: #8e8e93;
+  }
+  .guard-legend-dot {
+    display: inline-block; width: 10px; height: 10px;
+    border-radius: 50%; margin-right: 4px; vertical-align: middle;
   }
 
   /* Input fields */
@@ -267,9 +281,14 @@
   <div class="guard-bar-wrap">
     <div class="guard-bar">
       <div class="guard-marker" id="ybMarker" style="left:0%"></div>
+      <div class="guard-marker-budget" id="ybBudgetMarker" style="left:0%"></div>
     </div>
     <div class="guard-bar-labels">
-      <span>0%</span><span>3% floor</span><span>6% cap</span><span>8%+</span>
+      <span>0%</span><span>3%</span><span>6%</span><span>8%+</span>
+    </div>
+    <div class="guard-legend">
+      <span><span class="guard-legend-dot" style="background:#fff"></span>Actuarial</span>
+      <span><span class="guard-legend-dot" style="background:#0a84ff"></span>Your Budget</span>
     </div>
   </div>
 
@@ -428,6 +447,7 @@
     var ybVsEl = document.getElementById('ybVsBudget');
     var ybVsLabel = document.getElementById('ybVsLabel');
     var ybMarker = document.getElementById('ybMarker');
+    var ybBudgetMarker = document.getElementById('ybBudgetMarker');
     if (remainYears > 0 && marketableMTM > 0) {
       ybYearsEl.textContent = remainYears + ' yrs';
       var ybAnnual = marketableMTM / remainYears;
@@ -435,9 +455,17 @@
       var ybRatePct = (ybAnnual / marketableMTM) * 100;
       ybRateEl.textContent = ybRatePct.toFixed(2) + '%';
       ybRateEl.style.color = (ybRatePct >= 3 && ybRatePct <= 6) ? '#30d158' : (ybRatePct < 3 ? '#ffd60a' : '#ff453a');
-      // Guardrail bar marker (scale 0-8%)
+      // Guardrail bar markers (scale 0-8%)
       var markerPct = Math.min(100, Math.max(0, (ybRatePct / 8) * 100));
       ybMarker.style.left = markerPct + '%';
+      if (budget > 0) {
+        var budgetRatePct = (budget / marketableMTM) * 100;
+        var budgetMarkerPct = Math.min(100, Math.max(0, (budgetRatePct / 8) * 100));
+        ybBudgetMarker.style.left = budgetMarkerPct + '%';
+        ybBudgetMarker.style.display = 'block';
+      } else {
+        ybBudgetMarker.style.display = 'none';
+      }
       // Status
       if (ybRatePct > 6) {
         ybGuardEl.textContent = 'Above 6% cap';
@@ -474,6 +502,7 @@
       ybSpendEl.textContent = '—';
       ybRateEl.textContent = '—'; ybRateEl.style.color = '';
       ybMarker.style.left = '0%';
+      ybBudgetMarker.style.display = 'none';
       ybGuardEl.textContent = '—'; ybGuardEl.style.color = '';
       ybFloorEl.textContent = '—';
       ybCeilEl.textContent = '—';
