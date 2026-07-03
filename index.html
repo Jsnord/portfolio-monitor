@@ -242,12 +242,16 @@
 <div class="card">
   <div class="section-title">Actuarial Spending (WSJ Method)</div>
   <div class="row">
-    <span class="rl" style="color:#636366">Current Age</span>
-    <span class="rv"><input type="text" id="currentAge" inputmode="numeric" placeholder="e.g. 55" style="background:transparent;border:none;color:#8e8e93;font-size:15px;font-weight:600;text-align:right;width:70px;outline:none;font-family:inherit"></span>
+    <span class="rl" style="color:#636366">Birth Year</span>
+    <span class="rv"><input type="text" id="birthYear" inputmode="numeric" placeholder="e.g. 1967" value="1967" style="background:transparent;border:none;color:#8e8e93;font-size:15px;font-weight:600;text-align:right;width:70px;outline:none;font-family:inherit"></span>
   </div>
   <div class="row">
     <span class="rl" style="color:#636366">Plan to Age</span>
     <span class="rv"><input type="text" id="maxAge" inputmode="numeric" placeholder="e.g. 95" style="background:transparent;border:none;color:#8e8e93;font-size:15px;font-weight:600;text-align:right;width:70px;outline:none;font-family:inherit"></span>
+  </div>
+  <div class="row">
+    <span class="rl">Your Age</span>
+    <span class="rv" id="ybCurrentAge">—</span>
   </div>
   <div class="row">
     <span class="rl">Remaining Years</span>
@@ -412,8 +416,11 @@
     vacEl.style.color = vacAvail > 0 ? '#30d158' : '#ffd60a';
 
     // Actuarial spending (WSJ method: portfolio / remaining years)
-    var currentAge = parseNum(document.getElementById('currentAge').value);
+    var birthYear = parseNum(document.getElementById('birthYear').value);
     var maxAge = parseNum(document.getElementById('maxAge').value);
+    var now = new Date();
+    var currentAge = birthYear > 0 ? now.getFullYear() - birthYear : 0;
+    document.getElementById('ybCurrentAge').textContent = currentAge > 0 ? currentAge : '—';
     var remainYears = maxAge - currentAge;
     var ybYearsEl = document.getElementById('ybYears');
     var ybSpendEl = document.getElementById('ybSpend');
@@ -485,7 +492,7 @@
       spMove: document.getElementById('spMove').value,
       budget: document.getElementById('budget').value,
       vacSpent: document.getElementById('vacSpent').value,
-      currentAge: document.getElementById('currentAge').value,
+      birthYear: document.getElementById('birthYear').value,
       maxAge: document.getElementById('maxAge').value,
       isNeg: isNeg
     };
@@ -497,7 +504,7 @@
     if (s.spMove) document.getElementById('spMove').value = s.spMove;
     if (s.budget) document.getElementById('budget').value = s.budget;
     if (s.vacSpent) document.getElementById('vacSpent').value = s.vacSpent;
-    if (s.currentAge) document.getElementById('currentAge').value = s.currentAge;
+    if (s.birthYear) document.getElementById('birthYear').value = s.birthYear;
     if (s.maxAge) document.getElementById('maxAge').value = s.maxAge;
     if (typeof s.isNeg === 'boolean') {
       isNeg = s.isNeg;
@@ -608,7 +615,7 @@
     calculate();
     scheduleSave();
   });
-  ['currentAge', 'maxAge'].forEach(function(id) {
+  ['birthYear', 'maxAge'].forEach(function(id) {
     document.getElementById(id).addEventListener('input', function() {
       calculate();
       scheduleSave();
