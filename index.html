@@ -287,7 +287,7 @@
       <span>0%</span><span>3%</span><span>6%</span><span>8%+</span>
     </div>
     <div class="guard-legend">
-      <span><span class="guard-legend-dot" style="background:#fff"></span>Actuarial</span>
+      <span><span class="guard-legend-dot" style="background:#fff"></span>WSJ Method</span>
       <span><span class="guard-legend-dot" style="background:#0a84ff"></span>Your Budget</span>
     </div>
   </div>
@@ -484,11 +484,11 @@
       if (budget > 0) {
         var ybVs = ybAnnual - budget;
         if (ybVs >= 0) {
-          ybVsLabel.textContent = 'Actuarial allows extra';
+          ybVsLabel.textContent = 'WSJ method allows extra';
           ybVsEl.textContent = '+' + fmtDollar(ybVs) + ' above budget';
           ybVsEl.style.color = '#30d158';
         } else {
-          ybVsLabel.textContent = 'Budget exceeds actuarial';
+          ybVsLabel.textContent = 'Budget exceeds WSJ method';
           ybVsEl.textContent = fmtDollar(Math.abs(ybVs)) + ' over capacity';
           ybVsEl.style.color = '#ff453a';
         }
