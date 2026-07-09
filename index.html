@@ -433,7 +433,7 @@
         if (!rh || rawTotal > rh.val) {
           if (pending && pending.val === rawTotal) {
             // Same value as pending — check if 1 hour has passed
-            if (nowMs - pending.since >= 60000) {
+            if (nowMs - pending.since >= 1800000) {
               var d = new Date(nowMs);
               rh = { val: rawTotal, date: (d.getMonth()+1) + '/' + d.getDate() + '/' + d.getFullYear() };
               localStorage.setItem('pf_recordHigh', JSON.stringify(rh));
