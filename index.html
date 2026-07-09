@@ -226,7 +226,7 @@
     <span class="rv" id="nonMkt">—</span>
   </div>
   <div class="row bold">
-    <span class="rl">Total Assets (MTM)</span>
+    <span class="rl">Total Assets (MTM)<br><span id="spPctLabel" style="font-size:11px;color:#48484a;font-weight:400"></span></span>
     <span class="rv" id="totalMTM">—</span>
   </div>
   <div class="row spaced">
@@ -422,6 +422,8 @@
     document.getElementById('mktMTM').textContent = fmtM(marketableMTM);
     document.getElementById('nonMkt').textContent = fmtM(NON_MARKETABLE);
     document.getElementById('totalMTM').textContent = fmtM(totalMTM);
+    var spLbl = document.getElementById('spPctLabel');
+    spLbl.textContent = sp !== 0 ? 'S&P ' + (sp > 0 ? '+' : '') + sp + '%' : '';
 
     // Record high tracking — 1-hour confirmation window to filter typos
     var rawTotal = parseNum(document.getElementById('totalAssets').value);
