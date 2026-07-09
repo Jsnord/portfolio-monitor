@@ -686,6 +686,8 @@
 
   // --- Init ---
   loadAll();
+  // Auto-refresh every 60s to promote pending record highs without user interaction
+  setInterval(calculate, 60000);
 </script>
 </body>
 </html>
