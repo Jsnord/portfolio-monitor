@@ -231,7 +231,7 @@
   </div>
   <div class="row spaced">
     <span class="rl" style="color:#636366">Record High</span>
-    <span class="rv" style="color:#636366"><span id="recordHighVal">—</span> <span id="recordHighPct" style="font-size:12px;font-weight:600"></span> <span id="recordHighDate" style="color:#48484a;font-size:11px;font-weight:500"></span></span>
+    <span class="rv" style="text-align:right;color:#636366"><span id="recordHighVal">—</span><span id="recordHighPct" style="font-size:12px;font-weight:600;margin-left:5px"></span><br><span id="recordHighDate" style="color:#48484a;font-size:11px;font-weight:400"></span></span>
   </div>
 </div>
 
@@ -453,8 +453,7 @@
           var pctEl = document.getElementById('recordHighPct');
           var pctDiff = ((rawTotal - rh.val) / rh.val) * 100;
           if (Math.abs(pctDiff) < 0.01) {
-            pctEl.textContent = 'Current high';
-            pctEl.style.color = '#30d158';
+            pctEl.textContent = '';
           } else {
             pctEl.textContent = (pctDiff > 0 ? '+' : '') + pctDiff.toFixed(2) + '%';
             pctEl.style.color = pctDiff >= 0 ? '#30d158' : '#ff453a';
