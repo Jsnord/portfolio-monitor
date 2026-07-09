@@ -229,6 +229,14 @@
     <span class="rl">Total Assets (MTM)</span>
     <span class="rv" id="totalMTM">—</span>
   </div>
+  <div class="row spaced">
+    <span class="rl" style="color:#636366">Record High</span>
+    <span class="rv" id="recordHighVal" style="color:#636366">—</span>
+  </div>
+  <div class="row" style="margin-top:-6px">
+    <span class="rl"></span>
+    <span class="rv" id="recordHighDate" style="color:#48484a;font-size:12px;font-weight:500">—</span>
+  </div>
 </div>
 
 <!-- Annual Spending -->
@@ -418,6 +426,24 @@
     document.getElementById('mktMTM').textContent = fmtM(marketableMTM);
     document.getElementById('nonMkt').textContent = fmtM(NON_MARKETABLE);
     document.getElementById('totalMTM').textContent = fmtM(totalMTM);
+
+    // Record high tracking (based on raw totalAssets input)
+    var rawTotal = parseNum(document.getElementById('totalAssets').value);
+    if (rawTotal > 0) {
+      try {
+        var rh = JSON.parse(localStorage.getItem('pf_recordHigh') || 'null');
+        if (!rh || rawTotal > rh.val) {
+          var now = new Date();
+          var mo = now.getMonth() + 1;
+          var dy = now.getDate();
+          var yr = now.getFullYear();
+          rh = { val: rawTotal, date: mo + '/' + dy + '/' + yr };
+          localStorage.setItem('pf_recordHigh', JSON.stringify(rh));
+        }
+        document.getElementById('recordHighVal').textContent = fmtM(rh.val);
+        document.getElementById('recordHighDate').textContent = rh.date;
+      } catch(e) {}
+    }
 
     // Annual spending
     var maxSpend = TARGET_RATE * marketableMTM;
