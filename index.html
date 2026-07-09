@@ -689,6 +689,12 @@
   });
 
   // --- Init ---
+  // Seed record high if none exists
+  try {
+    if (!localStorage.getItem('pf_recordHigh')) {
+      localStorage.setItem('pf_recordHigh', JSON.stringify({ val: 53770000, date: '5/28/2026' }));
+    }
+  } catch(e) {}
   loadAll();
   // Auto-refresh every 60s to promote pending record highs without user interaction
   setInterval(calculate, 60000);
