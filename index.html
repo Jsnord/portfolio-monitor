@@ -427,21 +427,34 @@
     document.getElementById('nonMkt').textContent = fmtM(NON_MARKETABLE);
     document.getElementById('totalMTM').textContent = fmtM(totalMTM);
 
-    // Record high tracking (based on raw totalAssets input)
+    // Record high tracking — 1-hour confirmation window to filter typos
     var rawTotal = parseNum(document.getElementById('totalAssets').value);
     if (rawTotal > 0) {
       try {
         var rh = JSON.parse(localStorage.getItem('pf_recordHigh') || 'null');
+        var pending = JSON.parse(localStorage.getItem('pf_pendingHigh') || 'null');
+        var nowMs = Date.now();
         if (!rh || rawTotal > rh.val) {
-          var now = new Date();
-          var mo = now.getMonth() + 1;
-          var dy = now.getDate();
-          var yr = now.getFullYear();
-          rh = { val: rawTotal, date: mo + '/' + dy + '/' + yr };
-          localStorage.setItem('pf_recordHigh', JSON.stringify(rh));
+          if (pending && pending.val === rawTotal) {
+            // Same value as pending — check if 1 hour has passed
+            if (nowMs - pending.since >= 3600000) {
+              var d = new Date(nowMs);
+              rh = { val: rawTotal, date: (d.getMonth()+1) + '/' + d.getDate() + '/' + d.getFullYear() };
+              localStorage.setItem('pf_recordHigh', JSON.stringify(rh));
+              localStorage.removeItem('pf_pendingHigh');
+            }
+          } else {
+            // New candidate — start the clock
+            localStorage.setItem('pf_pendingHigh', JSON.stringify({ val: rawTotal, since: nowMs }));
+          }
+        } else {
+          // Not a new high — clear any pending
+          localStorage.removeItem('pf_pendingHigh');
         }
-        document.getElementById('recordHighVal').textContent = fmtM(rh.val);
-        document.getElementById('recordHighDate').textContent = rh.date;
+        if (rh) {
+          document.getElementById('recordHighVal').textContent = fmtM(rh.val);
+          document.getElementById('recordHighDate').textContent = rh.date;
+        }
       } catch(e) {}
     }
 
