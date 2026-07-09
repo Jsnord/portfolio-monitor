@@ -451,7 +451,10 @@
           document.getElementById('recordHighVal').textContent = fmtM(rh.val);
           document.getElementById('recordHighDate').textContent = rh.date;
           var pctEl = document.getElementById('recordHighPct');
-          var pctDiff = ((rawTotal - rh.val) / rh.val) * 100;
+          var nonEquity = NON_MARKETABLE + NON_EQUITY_MARKETABLE;
+          var currentEquity = Math.max(0, rawTotal - nonEquity);
+          var recordEquity = Math.max(0, rh.val - nonEquity);
+          var pctDiff = recordEquity > 0 ? ((currentEquity - recordEquity) / recordEquity) * 100 : 0;
           if (Math.abs(pctDiff) < 0.01) {
             pctEl.textContent = '';
           } else {
