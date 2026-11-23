@@ -319,9 +319,9 @@
   var isNeg = false;
   var saveTimer = null;
   var TARGET_RATE = 0.015; // 1.500%
-  var NON_MARKETABLE = 3250788;
-  var NON_EQUITY_MARKETABLE = 19953312; // bonds + MM + other (for MTM adj)
-  var CASH_LIKE = 8000000; // money market / settlement (for drawdown calc)
+  var NON_MARKETABLE = 3385788;   // house 3M + art 150K + watches 150K + Finepoint 20K + Redbird 40K + Sentient 25,788
+  var NON_EQUITY_MARKETABLE = 11418556; // MM 9,967,705 + IRA bonds 1,362,409 + TreasuryDirect 74K + VBILX 10K + gold 4K
+  var CASH_LIKE = 11418556; // same as above — non-equity marketable for drawdown calc
   var REQUIRED_EXPENSES = 647914;
 
   // --- Helpers ---
@@ -361,7 +361,7 @@
     var total = parseNum(document.getElementById('totalAssets').value);
     var sp = parseNum(document.getElementById('spMove').value);
     if (isNeg) sp = -sp;
-    var budget = parseNum(document.getElementById('budget').value) || 710791;
+    var budget = parseNum(document.getElementById('budget').value) || 725994;
 
     var marketableClose = total - NON_MARKETABLE;
     if (marketableClose < 0) marketableClose = 0;
