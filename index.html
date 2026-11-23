@@ -320,7 +320,8 @@
   var saveTimer = null;
   var TARGET_RATE = 0.015; // 1.500%
   var NON_MARKETABLE = 3250788;
-  var NON_EQUITY_MARKETABLE = 19953312;
+  var NON_EQUITY_MARKETABLE = 19953312; // bonds + MM + other (for MTM adj)
+  var CASH_LIKE = 8000000; // money market / settlement (for drawdown calc)
   var REQUIRED_EXPENSES = 647914;
 
   // --- Helpers ---
@@ -455,9 +456,9 @@
           document.getElementById('recordHighVal').textContent = fmtM(rh.val);
           document.getElementById('recordHighDate').textContent = rh.date;
           var pctEl = document.getElementById('recordHighPct');
-          var nonEquity = NON_MARKETABLE + NON_EQUITY_MARKETABLE;
-          var currentEquity = Math.max(0, rawTotal - nonEquity);
-          var recordEquity = Math.max(0, rh.val - nonEquity);
+          var nonEquityDrawdown = NON_MARKETABLE + CASH_LIKE;
+          var currentEquity = Math.max(0, rawTotal - nonEquityDrawdown);
+          var recordEquity = Math.max(0, rh.val - nonEquityDrawdown);
           var pctDiff = recordEquity > 0 ? ((currentEquity - recordEquity) / recordEquity) * 100 : 0;
           if (Math.abs(pctDiff) < 0.01) {
             pctEl.textContent = '';
