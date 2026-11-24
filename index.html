@@ -457,7 +457,7 @@
           document.getElementById('recordHighDate').textContent = rh.date;
           var pctEl = document.getElementById('recordHighPct');
           var nonEquityDrawdown = NON_MARKETABLE + CASH_LIKE;
-          var currentEquity = Math.max(0, rawTotal - nonEquityDrawdown);
+          var currentEquity = Math.max(0, totalMTM - nonEquityDrawdown);
           var recordEquity = Math.max(0, rh.val - nonEquityDrawdown);
           var pctDiff = recordEquity > 0 ? ((currentEquity - recordEquity) / recordEquity) * 100 : 0;
           if (Math.abs(pctDiff) < 0.01) {
