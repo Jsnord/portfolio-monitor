@@ -237,6 +237,10 @@
     <span class="rl" style="font-size:11px;color:#48484a">Peak <span id="recordHighArrow" style="font-weight:600"></span></span>
     <span class="rv"><span id="recordHighPct" style="font-size:12px;font-weight:600"></span><span id="recordHighDate" style="color:#48484a;font-size:11px;font-weight:400;margin-left:5px"></span></span>
   </div>
+  <div class="row" style="margin-top:-8px">
+    <span class="rl" style="font-size:11px;color:#48484a">S&P 500 <span id="spPeakArrow" style="font-weight:600"></span></span>
+    <span class="rv"><span id="spPeakPct" style="font-size:12px;font-weight:600"></span><span id="spPeakDate" style="color:#48484a;font-size:11px;font-weight:400;margin-left:5px"></span></span>
+  </div>
 </div>
 
 <!-- Annual Spending -->
@@ -440,7 +444,7 @@
             // Same value as pending — check if 1 hour has passed
             if (nowMs - pending.since >= 1800000) {
               var d = new Date(nowMs);
-              rh = { val: rawTotal, date: (d.getMonth()+1) + '/' + d.getDate() + '/' + d.getFullYear() };
+              rh = { val: rawTotal, date: (d.getMonth()+1) + '/' + d.getDate() + '/' + d.getFullYear(), sp: currentSP || 0 };
               localStorage.setItem('pf_recordHigh', JSON.stringify(rh));
               localStorage.removeItem('pf_pendingHigh');
             }
@@ -469,6 +473,7 @@
             pctEl.style.color = arrowColor;
           }
         }
+        updateSPDrawdown();
       } catch(e) {}
     }
 
@@ -698,16 +703,63 @@
     });
   });
 
+  // --- S&P 500 live fetch ---
+  var currentSP = null;
+  function fetchSP() {
+    try {
+      fetch('https://query1.finance.yahoo.com/v8/finance/chart/%5EGSPC?range=1d&interval=1d')
+        .then(function(r) { return r.json(); })
+        .then(function(d) {
+          var meta = d.chart.result[0].meta;
+          currentSP = meta.regularMarketPrice;
+          updateSPDrawdown();
+        }).catch(function(){});
+    } catch(e) {}
+  }
+
+  function updateSPDrawdown() {
+    if (!currentSP) return;
+    try {
+      var rh = JSON.parse(localStorage.getItem('pf_recordHigh') || 'null');
+      if (!rh || !rh.sp) return;
+      var spPctDiff = ((currentSP - rh.sp) / rh.sp) * 100;
+      var pctEl = document.getElementById('spPeakPct');
+      var dateEl = document.getElementById('spPeakDate');
+      if (Math.abs(spPctDiff) < 0.01) {
+        pctEl.textContent = '';
+        dateEl.textContent = '';
+      } else {
+        var arrow = spPctDiff >= 0 ? '▲' : '▼';
+        var arrowColor = spPctDiff >= 0 ? '#30d158' : '#ff453a';
+        var arrowEl = document.getElementById('spPeakArrow');
+        arrowEl.textContent = arrow;
+        arrowEl.style.color = arrowColor;
+        pctEl.textContent = (spPctDiff > 0 ? '+' : '') + spPctDiff.toFixed(2) + '%';
+        pctEl.style.color = arrowColor;
+        dateEl.textContent = rh.date;
+      }
+    } catch(e) {}
+  }
+
   // --- Init ---
   // Seed record high if none exists
   try {
     if (!localStorage.getItem('pf_recordHigh')) {
-      localStorage.setItem('pf_recordHigh', JSON.stringify({ val: 55181000, date: '8/14/2026' }));
+      localStorage.setItem('pf_recordHigh', JSON.stringify({ val: 55181000, date: '8/14/2026', sp: 7799 }));
+    } else {
+      // Add sp to existing record high if missing
+      var rh = JSON.parse(localStorage.getItem('pf_recordHigh'));
+      if (rh && !rh.sp) {
+        rh.sp = 7799;
+        localStorage.setItem('pf_recordHigh', JSON.stringify(rh));
+      }
     }
   } catch(e) {}
   loadAll();
+  fetchSP();
   // Auto-refresh every 60s to promote pending record highs without user interaction
   setInterval(calculate, 60000);
+  setInterval(fetchSP, 300000); // refresh S&P every 5 min
 </script>
 </body>
 </html>
