@@ -707,13 +707,23 @@
   var currentSP = null;
   function fetchSP() {
     try {
-      fetch('https://query1.finance.yahoo.com/v8/finance/chart/%5EGSPC?range=1d&interval=1d')
-        .then(function(r) { return r.json(); })
-        .then(function(d) {
-          var meta = d.chart.result[0].meta;
-          currentSP = meta.regularMarketPrice;
-          updateSPDrawdown();
-        }).catch(function(){});
+      // Try multiple endpoints for S&P 500
+      var endpoints = [
+        { url: 'https://query2.finance.yahoo.com/v8/finance/chart/%5EGSPC?range=1d&interval=1d', parse: function(d) { return d.chart.result[0].meta.regularMarketPrice; } },
+        { url: 'https://query1.finance.yahoo.com/v8/finance/chart/%5EGSPC?range=1d&interval=1d', parse: function(d) { return d.chart.result[0].meta.regularMarketPrice; } },
+        { url: 'https://api.marketdata.app/v1/stocks/quotes/SPY/', parse: function(d) { return d.last ? d.last[0] * 10 : null; } }
+      ];
+      function tryEndpoint(i) {
+        if (i >= endpoints.length) return;
+        fetch(endpoints[i].url)
+          .then(function(r) { if (!r.ok) throw 'err'; return r.json(); })
+          .then(function(d) {
+            var val = endpoints[i].parse(d);
+            if (val && val > 1000) { currentSP = val; updateSPDrawdown(); }
+            else { tryEndpoint(i + 1); }
+          }).catch(function() { tryEndpoint(i + 1); });
+      }
+      tryEndpoint(0);
     } catch(e) {}
   }
 
